@@ -2,6 +2,7 @@ const global = {
     currentPage: window.location.pathname,
 }
 
+// Display 20 most popular movies to the home page.
 async function displayPopularMovies() {
     const {results} = await fetchAPIData('movie/popular')
     results.forEach((movie) => {
@@ -40,13 +41,27 @@ async function fetchAPIData(endpoint) {
     const API_KEY = '3419972f7a01d59a729595c7836782b3'
     const API_URL = 'https://api.themoviedb.org/3/'
 
+    showSpinner()
+
     const response = await fetch(
         `${API_URL}${endpoint}?api_key=${API_KEY}&language=en-US`
     )
 
     const data = await response.json()
 
+    hideSpinner()
+
     return data
+}
+
+// Show Spinner
+function showSpinner() {
+    document.querySelector('.spinner').classList.add('show')
+}
+
+// Hide Spinner
+function hideSpinner() {
+    document.querySelector('.spinner').classList.remove('show')
 }
 
 // Highlight active link
