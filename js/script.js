@@ -7,6 +7,11 @@ const global = {
         totalPages: 1,
         totalResults: 0,
     },
+    movies: {
+        page: 1,
+        totalPages: 1,
+        totalResults: 0,
+    },
     api: {
         apiKey: '3419972f7a01d59a729595c7836782b3',
         apiUrl: 'https://api.themoviedb.org/3/',
@@ -15,36 +20,55 @@ const global = {
 
 // Displays 20 most popular movies to the home page.
 async function displayPopularMovies() {
-    const {results} = await fetchAPIData('movie/popular')
+    const {results, total_pages, page, total_results} = await fetchAPIData(
+        'movie/popular',
+        'movies'
+    )
+    global.movies.page = page
+    global.movies.totalPages = total_pages
+    global.movies.totalResults = total_results
+
+    displayMovies(results)
+}
+
+function displayMovies(results) {
+    // Clear previous movies if it exists in the DOM.
+    document.querySelector('#popular-movies').innerHTML = ''
+
+    // Clear previous pagination if it exists in the DOM.
+    document.querySelector('#pagination').innerHTML = ''
+
     results.forEach((movie) => {
         const div = document.createElement('div')
         div.classList.add('card')
         div.innerHTML = `        
-          <a href="movie-details.html?id=${movie.id}">
-            ${
-                movie.poster_path
-                    ? `<img
-            src="http://image.tmdb.org/t/p/w500${movie.poster_path}"
+      <a href="movie-details.html?id=${movie.id}">
+        ${
+            movie.poster_path
+                ? `<img
+        src="http://image.tmdb.org/t/p/w500${movie.poster_path}"
+        class="card-img-top"
+        alt="${movie.title}"
+      />`
+                : `<img
+            src="images/no-image.jpg"
             class="card-img-top"
             alt="${movie.title}"
           />`
-                    : `<img
-                src="images/no-image.jpg"
-                class="card-img-top"
-                alt="${movie.title}"
-              />`
-            }
-          </a>
-          <div class="card-body">
-            <h5 class="card-title">${movie.title}</h5>
-            <p class="card-text">
-              <small class="text-muted">Release: ${movie.release_date}</small>
-            </p>
-          </div>        
-        `
+        }
+      </a>
+      <div class="card-body">
+        <h5 class="card-title">${movie.title}</h5>
+        <p class="card-text">
+          <small class="text-muted">Release: ${movie.release_date}</small>
+        </p>
+      </div>        
+    `
 
         document.querySelector('#popular-movies').appendChild(div)
     })
+
+    displayMoviesPagination()
 }
 
 // Displays 20 most popular tv shows to the TV shows page.
@@ -319,7 +343,43 @@ function displaySearchResults(results) {
     displayPagination()
 }
 
-// Create and display pagination
+// Create and display movies page pagination
+function displayMoviesPagination() {
+    const div = document.createElement('div')
+    div.classList.add('pagination')
+    div.innerHTML = ` 
+  <button class="btn btn-primary" id="prev">Prev</button>
+  <button class="btn btn-primary" id="next">Next</button>
+  <div class="page-counter">Page ${global.movies.page} of ${global.movies.totalPages} </div>
+`
+    document.querySelector('#pagination').appendChild(div)
+
+    // Disable prev button if on first page
+    if (global.movies.page === 1) {
+        document.querySelector('#prev').disabled = true
+    }
+
+    // Disable next button if on last page
+    if (global.movies.page === global.movies.totalPages) {
+        document.querySelector('#next').disabled = true
+    }
+
+    // Next page
+    document.querySelector('#next').addEventListener('click', async () => {
+        global.movies.page++
+        const {results} = await fetchAPIData('movie/popular', 'movies')
+        displayMovies(results)
+    })
+
+    // Prev page
+    document.querySelector('#prev').addEventListener('click', async () => {
+        global.movies.page--
+        const {results} = await fetchAPIData('movie/popular', 'movies')
+        displayMovies(results)
+    })
+}
+
+// Create and display search page pagination
 function displayPagination() {
     const div = document.createElement('div')
     div.classList.add('pagination')
@@ -432,15 +492,23 @@ function initSwiper() {
 }
 
 // Fetch data from TMDB API
-async function fetchAPIData(endpoint) {
+async function fetchAPIData(endpoint, page) {
     const API_KEY = global.api.apiKey
     const API_URL = global.api.apiUrl
 
     showSpinner()
 
-    const response = await fetch(
-        `${API_URL}${endpoint}?api_key=${API_KEY}&language=en-US`
-    )
+    let response
+
+    if (page === 'movies') {
+        response = await fetch(
+            `${API_URL}${endpoint}?api_key=${API_KEY}&language=en-US&page=${global.movies.page}`
+        )
+    } else {
+        response = await fetch(
+            `${API_URL}${endpoint}?api_key=${API_KEY}&language=en-US&`
+        )
+    }
 
     const data = await response.json()
 
