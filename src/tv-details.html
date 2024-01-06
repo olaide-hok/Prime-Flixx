@@ -9,11 +9,7 @@
         <link
             href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap"
             rel="stylesheet" />
-        <link rel="stylesheet" href="lib/fontawesome.css" />
-        <link rel="stylesheet" href="css/style.css" />
-        <link rel="stylesheet" href="css/spinner.css" />
-        <script src="js/script.js" defer></script>
-        <title>Prime Flixx | Search Movies & Shows</title>
+        <title>Prime Flixx | Show Details</title>
     </head>
     <body>
         <header class="main-header">
@@ -32,41 +28,13 @@
             </div>
         </header>
 
-        <!-- Search Movies -->
-        <section class="search">
-            <div class="container">
-                <div id="alert"></div>
-                <form action="/search.html" class="search-form">
-                    <div class="search-radio">
-                        <input
-                            type="radio"
-                            id="movie"
-                            name="type"
-                            value="movie"
-                            checked />
-                        <label for="movies">Movies</label>
-                        <input type="radio" id="tv" name="type" value="tv" />
-                        <label for="shows">TV Shows</label>
-                    </div>
-                    <div class="search-flex">
-                        <input
-                            type="text"
-                            name="search-term"
-                            id="search-term"
-                            placeholder="Enter search term" />
-                        <button class="btn" type="submit">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </div>
-                </form>
+        <!-- Show Details -->
+        <section class="container">
+            <div class="back">
+                <a class="btn" href="shows.html">Back To TV Shows</a>
             </div>
-        </section>
-
-        <!-- Search Results -->
-        <section id="search-results-wrapper" class="container">
-            <heading id="search-results-heading"></heading>
-            <div id="search-results" class="grid"></div>
-            <div id="pagination"></div>
+            <!-- Show Details Output -->
+            <div id="show-details"></div>
         </section>
 
         <!-- Footer -->
