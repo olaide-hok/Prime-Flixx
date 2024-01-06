@@ -1,3 +1,11 @@
+import '@fortawesome/fontawesome-free/js/all'
+import Swiper from 'swiper'
+// import Swiper styles
+import 'swiper/css'
+import '../css/style.css'
+import '../css/spinner.css'
+import NoImage from '../images/no-image.jpg'
+
 const global = {
     currentPage: window.location.pathname,
     search: {
@@ -13,8 +21,8 @@ const global = {
         totalResults: 0,
     },
     api: {
-        apiKey: '3419972f7a01d59a729595c7836782b3',
-        apiUrl: 'https://api.themoviedb.org/3/',
+        apiKey: process.env.API_KEY,
+        apiUrl: process.env.API_URL,
     },
 }
 
@@ -51,7 +59,7 @@ function displayMovies(results) {
         alt="${movie.title}"
       />`
                 : `<img
-            src="images/no-image.jpg"
+            src="${NoImage}"
             class="card-img-top"
             alt="${movie.title}"
           />`
@@ -62,9 +70,8 @@ function displayMovies(results) {
         <p class="card-text">
           <small class="text-muted">Release: ${movie.release_date}</small>
         </p>
-      </div>        
+      </div>
     `
-
         document.querySelector('#popular-movies').appendChild(div)
     })
 
@@ -87,7 +94,7 @@ async function displayPopularShows() {
             alt="${show.name}"
           />`
                     : `<img
-                src="images/no-image.jpg"
+                src="${NoImage}"
                 class="card-img-top"
                 alt="${show.name}"
               />`
@@ -127,7 +134,7 @@ async function displayMovieDetails() {
         alt="${movie.title}"
     />`
                 : `<img
-            src="images/no-image.jpg"
+            src="${NoImage}"
             class="card-img-top"
             alt="${movie.title}"
         />`
@@ -196,7 +203,7 @@ async function displayShowDetails() {
         alt="${show.name}"
     />`
                 : `<img
-            src="images/no-image.jpg"
+            src="${NoImage}"
             class="card-img-top"
             alt="${show.name}"
         />`
@@ -314,7 +321,7 @@ function displaySearchResults(results) {
         alt="${global.search.type === 'movie' ? result.title : result.name}"
       />`
                 : `<img
-            src="images/no-image.jpg"
+            src="${NoImage}"
             class="card-img-top"
             alt="${global.search.type === 'movie' ? result.title : result.name}"
           />`
